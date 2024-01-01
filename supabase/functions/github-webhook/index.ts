@@ -6,7 +6,7 @@ import { corsHeaders } from "../_shared/headers.ts";
 const handler = createEdgeFunction(async (req) => {
 	const body = await req.json();
 
-	if (body.commits.length === 0) {
+	if (!body.commits?.length) {
 		return new Response("ok");
 	}
 
