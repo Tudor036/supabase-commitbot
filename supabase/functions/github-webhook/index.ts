@@ -6,6 +6,10 @@ import { corsHeaders } from "../_shared/headers.ts";
 const handler = createEdgeFunction(async (req) => {
 	const body = await req.json();
 
+	if (body.commits.length === 0) {
+		return new Response("ok");
+	}
+
 	const isValid = createGithubClient().verifySignature(
 		req.headers.get("X-Hub-Signature-256") ?? "",
 		JSON.stringify(body)
@@ -19,10 +23,6 @@ const handler = createEdgeFunction(async (req) => {
 			},
 			status: 401,
 		});
-	}
-
-	if (body.commits.length === 0) {
-		return new Response("ok");
 	}
 
 	const payload = createGithubClient().parsePayload(body);
